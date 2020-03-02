@@ -16,7 +16,9 @@
    \ \____/\ \____/\ \__\\ \_\  \ \_\/\____\ \____\/\____/
     \/___/  \/___/  \/__/ \/_/   \/_/\/____/\/____/\/___/
 ```
-
+# .vimrc
+[base structure inspired by hidekuma](https://github.com/hidekuma/dotfiles)
+[inspired by david](https://github.com/taewooEom/vimrc/blob/master/.vimrc)
 
 # .gitconfig
 
