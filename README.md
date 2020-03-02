@@ -18,6 +18,7 @@
 ```
 # .vimrc
 [base structure inspired by hidekuma](https://github.com/hidekuma/dotfiles)
+
 [inspired by david](https://github.com/taewooEom/vimrc/blob/master/.vimrc)
 
 # .gitconfig
