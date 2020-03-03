@@ -22,6 +22,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'ctrlpvim/ctrlp.vim'      "Ctrl + P for search file
 Plug 'rking/ag.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
+Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion'
 
 "Editing utils
@@ -30,6 +32,10 @@ Plug 'scrooloose/nerdcommenter' " comment help tool
 "vim javascript, jsx
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
+Plug 'w0rp/ale' " eslint
+
+"vim golang
+Plug 'fatih/vim-go'
 
 "vim theme color
 Plug 'morhetz/gruvbox'
@@ -76,6 +82,41 @@ let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'                       
 let g:ag_prg="ag --silent --nogroup --case-sensitive"
 let g:ag_highlight=1
 let g:ag_format="%f:%l:%m"
+
+" ----------------------------------------------------------------------------
+"fzf
+" ----------------------------------------------------------------------------
+
+nmap <S-F> :Rg<CR>
+let g:fzf_colors =
+    \ { 'fg':      ['fg', 'Normal'],
+    \ 'bg':      ['bg', 'Normal'],
+    \ 'hl':      ['fg', 'Comment'],
+    \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+    \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+    \ 'hl+':     ['fg', 'Statement'],
+    \ 'info':    ['fg', 'PreProc'],
+    \ 'border':  ['fg', 'Ignore'],
+    \ 'prompt':  ['fg', 'Conditional'],
+    \ 'pointer': ['fg', 'Exception'],
+    \ 'marker':  ['fg', 'Keyword'],
+    \ 'spinner': ['fg', 'Label'],
+    \ 'header':  ['fg', 'Comment'] }
+
+function! RipgrepFzf(query, fullscreen)
+    let command_fmt = 'rg
+                \ --column
+                \ --line-number
+                \ --no-heading
+                \ --color=always
+                \ --smart-case %s || true'
+    let initial_command = printf(command_fmt, shellescape(a:query))
+    let reload_command = printf(command_fmt, '{q}')
+    let spec = {'options': ['--no-color', '--layout=reverse', '--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+    call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
 
 " ----------------------------------------------------------------------------
 " vim-multiple-cursor
@@ -133,6 +174,7 @@ set softtabstop=2
 set shiftwidth=2
 set sw=2
 set ts=2
+set expandtab
 "set textwidth=0                " text witdh column number
 set smarttab                    " Make Tab work fine with spaces
 set ai                          " Auto indent
@@ -144,7 +186,16 @@ set incsearch                   " do highlight as you type you search phrase
 set list                        " show tabs, trailings spaces, ...
 set listchars=tab:\|\ ,trail:.,extends:>,precedes:<
 
+" using tab, shift + tab key for indent as like other ide tools
+nnoremap <Tab> >>_
+nnoremap <S-Tab> <<_
+inoremap <S-Tab> <C-D>
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
+
 vmap '' :w ! pbcopy<CR><CR>
+
+let NERDSpaceDelims=1 "commnet after space
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UI
@@ -175,6 +226,16 @@ nnoremap <c-l> <c-w>l
 nnoremap <Space> :noh<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ESlint setting
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let b:ale_fixers = ['eslint']
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+" Set this variable to 1 to fix files when you save them.
+let g:ale_fix_on_save = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " File settings
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -193,6 +254,10 @@ if has("syntax")
     syntax on
 endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" language setting
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" go
+let g:go_fmt_command = "goimports"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 highlight ExtraWhitespace ctermbg=red guibg=red
@@ -202,3 +267,5 @@ let g:SuperTabDefaultCompletionType = "context"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set background=dark
 colorscheme gruvbox
+
+
