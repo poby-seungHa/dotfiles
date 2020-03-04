@@ -54,6 +54,7 @@ call plug#end()
 
 nmap ,nt :NERDTree<CR>
 nmap ,nf :NERDTreeFind<CR>
+let NERDTreeShowHidden=1 " show dotfile
 
 " ----------------------------------------------------------------------------
 " vim-easymotion
